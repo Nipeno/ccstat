@@ -9,6 +9,8 @@ Compact two-line statusline for [Claude Code](https://docs.anthropic.com/en/docs
 
 ![ccstat screenshot](screenshot.png)
 
+*Demo screenshot — shows all segments and badges at once. Most sessions display a subset depending on your plan, git state, and active plugins.*
+
 **Line 1 — identity:** directory · git branch + status · model · time · alerts  
 **Line 2 — resources:** cost + $/hour · context bar · tokens · output speed · duration · lines changed · rate limits
 
