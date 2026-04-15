@@ -1,0 +1,49 @@
+name: Bug report
+description: Something isn't working
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: ccstat version
+      description: "Run `/ccstat-info` or `grep VERSION ~/.claude/statusline.py`"
+      placeholder: "1.2.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - macOS
+        - Linux
+        - Windows
+    validations:
+      required: true
+
+  - type: input
+    id: claude-version
+    attributes:
+      label: Claude Code version
+      description: "Run `claude --version`"
+      placeholder: "1.0.0"
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug and what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: statusline-output
+    attributes:
+      label: Statusline output
+      description: "If relevant, paste the raw output of `echo '{}' | python3 ~/.claude/statusline.py`"
+      render: text
+    validations:
+      required: false

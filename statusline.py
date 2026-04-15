@@ -2,7 +2,7 @@
 # ccstat — compact two-line statusline for Claude Code sessions
 # Copyright (C) 2026 Nipeno
 # SPDX-License-Identifier: GPL-3.0-or-later
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 import json, sys, os, subprocess, time
 from datetime import datetime
 
@@ -38,7 +38,10 @@ _BG_FETCH     = (
 update_badge = ''
 if CFG_UPDATE_CHECK:
     try:
-        _cache = json.loads(open(_UPDATE_CACHE).read()) if os.path.exists(_UPDATE_CACHE) else {}
+        _cache = {}
+        if os.path.exists(_UPDATE_CACHE):
+            with open(_UPDATE_CACHE) as _uf:
+                _cache = json.load(_uf)
         _age   = time.time() - float(_cache.get('checked', 0))
         if _age > 86400:
             _kw = {'stdout': subprocess.DEVNULL, 'stderr': subprocess.DEVNULL}
@@ -124,10 +127,8 @@ except Exception:
     pass
 
 # ── Shorten path ──────────────────────────────────────────────────────────
-home = os.path.expanduser('~')
-short_dir = cwd.replace(home, '~', 1)
-if os.name == 'nt':
-    short_dir = short_dir.replace('/', '\\')
+home = os.path.normpath(os.path.expanduser('~'))
+short_dir = os.path.normpath(cwd).replace(home, '~', 1)
 
 # ── Git ───────────────────────────────────────────────────────────────────
 branch = git_status = ahead_behind = ''

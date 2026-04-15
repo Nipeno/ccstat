@@ -16,9 +16,9 @@ claude plugin marketplace add Nipeno/ccstat
 claude plugin install ccstat@ccstat
 ```
 
-Then run `/ccstat-install` in any Claude Code session. Done.
+Then run `/ccstat-setup` in any Claude Code session. Done.
 
-This downloads `statusline.py`, configures `settings.json`, and gives you all `/ccstat-*` commands. Works on macOS, Linux, and Windows.
+This downloads `statusline.py`, configures `settings.json`, and verifies the install. Works on macOS, Linux, and Windows.
 
 <details>
 <summary>Alternative: install without the plugin marketplace</summary>
@@ -39,11 +39,10 @@ All commands are available as Claude Code slash commands after installing the pl
 
 | Command | Description |
 |---------|-------------|
-| `/ccstat-install` | Final setup step after `claude plugin install ccstat@ccstat` |
+| `/ccstat-setup` | Set up or repair ccstat |
 | `/ccstat-update` | Check for updates and apply with confirmation |
-| `/ccstat-reinstall` | Force reinstall — overwrites everything, no prompts |
-| `/ccstat-uninstall` | Remove ccstat and clean up settings |
-| `/ccstat-status` | Show version, update status, and current config |
+| `/ccstat-remove` | Remove ccstat and clean up settings |
+| `/ccstat-info` | Show version, update status, and current config |
 | `/ccstat-config` | View or change settings in `~/.claude/ccstat.json` |
 
 ---
@@ -74,7 +73,7 @@ Or just use `/ccstat-config` and Claude will handle it.
 
 ## Auto-updates
 
-ccstat checks for updates once per day in the background — a fire-and-forget subprocess with no tokens and no blocking. When a new version is available, a `↑ vX.Y.Z` badge appears on line 1. Run `/ccstat-update` to apply.
+ccstat checks for updates once per day in the background — a fire-and-forget subprocess with no tokens and no blocking. When a new version is available, a `↑ vX.Y.Z` badge appears on line 1. Run `/ccstat-update` to apply. Run `/ccstat-info` to check manually.
 
 To disable: set `"update_check": false` in `~/.claude/ccstat.json`.
 
@@ -96,7 +95,7 @@ To disable: set `"update_check": false` in `~/.claude/ccstat.json`.
 | Caveman badge | `[CAVEMAN]` | Shown if [caveman](https://github.com/JuliusBrussee/caveman) plugin active |
 | Session name | `[my-session]` | Shown if session is named |
 | Context warning | `⚠ 200k` | When context exceeds 200k tokens |
-| Update badge | `↑ v1.2.0` | New version available — run `/ccstat-update` |
+| Update badge | `↑ v1.3.0` | New version available — run `/ccstat-update` |
 
 ### Line 2
 

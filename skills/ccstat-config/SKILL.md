@@ -21,11 +21,22 @@ description: >
 
 1. Read current config:
    ```bash
-   cat ~/.claude/ccstat.json 2>/dev/null || echo "{}"
+   python3 -c "
+   import json, os
+   path = os.path.join(os.path.expanduser('~'), '.claude', 'ccstat.json')
+   cfg = {}
+   if os.path.exists(path):
+       with open(path) as f: cfg = json.load(f)
+   defaults = {'bar_width': 12, 'show_tok_speed': True, 'show_lines_diff': True, 'update_check': True}
+   for k, d in defaults.items():
+       v = cfg.get(k, d)
+       marker = ' (custom)' if v != d else ''
+       print(f'  {k:<20} {json.dumps(v)}{marker}')
+   "
    ```
 
 2. If user specified a setting to change (e.g. "set bar_width to 20", "disable update check"):
-   - Apply the change directly, write updated JSON back to `~/.claude/ccstat.json`
+   - Apply the change directly using the write script below
    - Confirm what changed
 
 3. If user just ran `/ccstat-config` with no specifics:
@@ -39,12 +50,17 @@ description: >
 
 Use Python to safely read/merge/write:
 ```bash
-python3 - <<'EOF'
+python3 - <<'PYEOF'
 import json, os
-path = os.path.expanduser('~/.claude/ccstat.json')
-cfg = json.loads(open(path).read()) if os.path.exists(path) else {}
-# apply changes here, e.g. cfg['bar_width'] = 20
-open(path, 'w').write(json.dumps(cfg, indent=2) + '\n')
+path = os.path.join(os.path.expanduser("~"), ".claude", "ccstat.json")
+cfg = {}
+if os.path.exists(path):
+    with open(path) as f:
+        cfg = json.load(f)
+# apply changes here, e.g. cfg["bar_width"] = 20
+with open(path, "w") as f:
+    json.dump(cfg, f, indent=2)
+    f.write("\n")
 print(json.dumps(cfg, indent=2))
-EOF
+PYEOF
 ```
