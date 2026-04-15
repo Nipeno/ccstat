@@ -60,10 +60,22 @@ If yes, run:
 
 ```bash
 python3 - <<'PYEOF'
-import urllib.request, os
+import urllib.request, os, json, time
 script = os.path.join(os.path.expanduser("~"), ".claude", "statusline.py")
+cache  = os.path.join(os.path.expanduser("~"), ".claude", ".ccstat-update-cache")
 url    = "https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py"
-urllib.request.urlretrieve(url, script)
+data   = urllib.request.urlopen(url, timeout=5).read()
+with open(script, 'wb') as f:
+    f.write(data)
+# Extract version from downloaded file and refresh cache so update badge clears
+latest = None
+for line in data.decode().splitlines():
+    if line.startswith("VERSION"):
+        latest = line.split('"')[1]
+        break
+if latest:
+    with open(cache, 'w') as f:
+        json.dump({'checked': time.time(), 'latest': latest}, f)
 print("✓ Updated. Changes take effect next prompt.")
 PYEOF
 ```
