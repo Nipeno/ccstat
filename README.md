@@ -11,37 +11,23 @@ Compact two-line statusline for [Claude Code](https://docs.anthropic.com/en/docs
 
 ## Install
 
-### Via Claude Code plugin marketplace
-
 ```bash
 claude plugin marketplace add Nipeno/ccstat
 claude plugin install ccstat@ccstat
 ```
 
-Then type `/ccstat` in any session and Claude installs it for you.
+Then run `/ccstat-install` in any Claude Code session. Done.
 
-### Via one-liner
+This downloads `statusline.py`, configures `settings.json`, and gives you all `/ccstat-*` commands. Works on macOS, Linux, and Windows.
+
+<details>
+<summary>Alternative: install without the plugin marketplace</summary>
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Nipeno/ccstat/main/install.sh | bash
 ```
 
-Downloads `statusline.py` to `~/.claude/` and patches `~/.claude/settings.json`.
-
-<details>
-<summary>Manual install (Windows / no curl)</summary>
-
-1. Download [`statusline.py`](https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py) and save to `%USERPROFILE%\.claude\statusline.py`
-2. Add to `%USERPROFILE%\.claude\settings.json`:
-
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "python \"%USERPROFILE%\\.claude\\statusline.py\""
-  }
-}
-```
+This installs the statusline only. Slash commands (`/ccstat-update`, `/ccstat-config`, etc.) require the plugin.
 
 </details>
 

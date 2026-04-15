@@ -28,9 +28,9 @@ cp skills/<name>/SKILL.md ~/.claude/plugins/marketplaces/ccstat/skills/<name>/SK
 
 ```
 statusline.py          — the statusline script (versioned)
-install.sh             — one-line installer
+install.sh             — fallback installer (curl one-liner)
 skills/
-  ccstat/              → /ccstat        install
+  ccstat-install/      → /ccstat-install    (primary install via marketplace)
   ccstat-update/       → /ccstat-update
   ccstat-reinstall/    → /ccstat-reinstall
   ccstat-status/       → /ccstat-status

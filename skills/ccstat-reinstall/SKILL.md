@@ -6,24 +6,33 @@ description: >
   "reinstall ccstat", "ccstat is broken", "fix ccstat".
 ---
 
-Force reinstall without prompting. Run both commands:
+Force reinstall without prompting. Run this Python script:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py -o ~/.claude/statusline.py
-```
+python3 - <<'PYEOF'
+import urllib.request, json, os, sys
 
-Then patch settings.json using Python to ensure the statusLine config is correct:
-
-```bash
-python3 - <<'EOF'
-import json, os, sys
-settings = os.path.join(os.path.expanduser("~"), ".claude", "settings.json")
-script   = os.path.join(os.path.expanduser("~"), ".claude", "statusline.py")
+home     = os.path.expanduser("~")
+script   = os.path.join(home, ".claude", "statusline.py")
+settings = os.path.join(home, ".claude", "settings.json")
+url      = "https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py"
 py       = "python" if sys.platform == "win32" else "python3"
-cfg = json.loads(open(settings).read()) if os.path.exists(settings) else {}
+
+print("→ Downloading statusline.py...")
+urllib.request.urlretrieve(url, script)
+
+print("→ Configuring settings.json...")
+cfg = {}
+if os.path.exists(settings):
+    with open(settings) as f:
+        cfg = json.load(f)
 cfg["statusLine"] = {"type": "command", "command": f"{py} {script}"}
-open(settings, "w").write(json.dumps(cfg, indent=2) + "\n")
-EOF
+with open(settings, "w") as f:
+    json.dump(cfg, f, indent=2)
+    f.write("\n")
+
+print("✓ ccstat reinstalled.")
+PYEOF
 ```
 
 Tell user: "ccstat reinstalled. Changes take effect next prompt."
