@@ -11,11 +11,22 @@ Compact two-line status display for [Claude Code](https://docs.anthropic.com/en/
 
 ## Install
 
+### Via Claude Code plugin marketplace
+
+```bash
+claude plugin marketplace add Nipeno/ccstat
+claude plugin install ccstat@ccstat
+```
+
+Then just type `/ccstat` in any session and Claude will install it for you.
+
+### Via one-liner
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Nipeno/ccstat/main/install.sh | bash
 ```
 
-The script downloads `statusline.py` to `~/.claude/` and patches `~/.claude/settings.json`. If you already have a `statusLine` configured, it will print a warning and show you what it would replace — nothing is overwritten without confirmation.
+The script downloads `statusline.py` to `~/.claude/` and patches `~/.claude/settings.json`. If you already have a `statusLine` configured, it will warn you before overwriting.
 
 ---
 

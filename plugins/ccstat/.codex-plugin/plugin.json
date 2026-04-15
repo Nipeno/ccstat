@@ -1,0 +1,34 @@
+{
+  "name": "ccstat",
+  "version": "1.0.0",
+  "description": "Compact two-line status display for Claude Code sessions — git, cost, context, rate limits at a glance.",
+  "author": {
+    "name": "Nipeno",
+    "url": "https://github.com/Nipeno"
+  },
+  "homepage": "https://github.com/Nipeno/ccstat",
+  "repository": "https://github.com/Nipeno/ccstat",
+  "license": "MIT",
+  "keywords": [
+    "statusline",
+    "terminal",
+    "developer-tools",
+    "claude-code"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ccstat",
+    "shortDescription": "Live session stats in your Claude Code statusline.",
+    "longDescription": "Adds a two-line statusline to every Claude Code session showing: directory, git branch and status, active model, cost, $/hour, context bar, token speed, session duration, lines changed, and Pro rate limit countdowns.",
+    "developerName": "Nipeno",
+    "category": "Productivity",
+    "capabilities": [
+      "Write"
+    ],
+    "websiteURL": "https://github.com/Nipeno/ccstat",
+    "privacyPolicyURL": "https://github.com/Nipeno/ccstat/blob/main/README.md",
+    "termsOfServiceURL": "https://github.com/Nipeno/ccstat/blob/main/LICENSE",
+    "defaultPrompt": [],
+    "brandColor": "#39d0ff"
+  }
+}
