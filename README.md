@@ -2,13 +2,10 @@
 
 Compact two-line status display for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) sessions.
 
-```
-~/Documents/GitHub/myproject  main ●3 ~1  claude-sonnet-4-6  14:22
-$0.042  $1.23/h  ▓▓▓▓░░░░░░░░ 33%  ↑12k  18t/s  ⏱ 2m14s  +47 -12
-```
+![ccstat screenshot](screenshot.png)
 
-**Line 1 — identity:** directory · git branch + status · model · effort level · time · alerts  
-**Line 2 — resources:** cost + $/hour · context bar · tokens this turn · output speed · duration · lines changed · rate limits
+**Line 1 — identity:** directory · git branch + status · model · time · alerts  
+**Line 2 — resources:** cost + $/hour · context bar · tokens · output speed · duration · lines changed · rate limits
 
 ---
 
@@ -18,9 +15,17 @@ $0.042  $1.23/h  ▓▓▓▓░░░░░░░░ 33%  ↑12k  18t/s  ⏱ 2m
 curl -fsSL https://raw.githubusercontent.com/Nipeno/ccstat/main/install.sh | bash
 ```
 
-That's it. The statusline appears at the bottom of your next Claude Code session.
+The script downloads `statusline.py` to `~/.claude/` and patches `~/.claude/settings.json`. If you already have a `statusLine` configured, it will print a warning and show you what it would replace — nothing is overwritten without confirmation.
 
-The script downloads `statusline.py` to `~/.claude/` and patches `~/.claude/settings.json` automatically. No manual JSON editing needed.
+---
+
+## Uninstall
+
+```bash
+rm ~/.claude/statusline.py
+```
+
+Then remove the `statusLine` block from `~/.claude/settings.json`. The statusline stops appearing immediately.
 
 ---
 
@@ -29,7 +34,7 @@ The script downloads `statusline.py` to `~/.claude/` and patches `~/.claude/sett
 ### Line 1
 
 | Segment | Example | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Directory | `~/projects/myapp` | Home-shortened path |
 | Git branch | `main` | Current branch |
 | Git ahead/behind | `↑2 ↓1` | Commits ahead/behind upstream |
@@ -44,7 +49,7 @@ The script downloads `statusline.py` to `~/.claude/` and patches `~/.claude/sett
 ### Line 2
 
 | Segment | Example | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Cost | `$0.042` | Session total. Gray on Pro (quota not depleted) |
 | Cost/hour | `$1.23/h` | Burn rate |
 | Context bar | `▓▓▓▓░░░░░░░░ 33%` | Green → yellow → red at 70%/90% |
@@ -62,7 +67,7 @@ The script downloads `statusline.py` to `~/.claude/` and patches `~/.claude/sett
 - Claude Code (any version with `statusLine` support)
 - Git (optional — git segments are skipped if not in a repo)
 
-**Platform notes:** ccstat works out of the box on macOS and Linux, which ship with Python 3. On Windows, Python isn't included by default — install it from [python.org](https://www.python.org/downloads/) first, then follow the manual install steps below instead of the curl one-liner.
+**Platform notes:** ccstat works out of the box on macOS and Linux, which ship with Python 3. On Windows, Python isn't included by default — install it from [python.org](https://www.python.org/downloads/) first, then use the manual install below.
 
 <details>
 <summary>Manual install (Windows / no curl)</summary>
