@@ -59,6 +59,20 @@ Skill files live in `skills/` and mirror to `~/.claude/plugins/marketplaces/ccst
 cp skills/<name>/SKILL.md ~/.claude/plugins/marketplaces/ccstat/skills/<name>/SKILL.md
 ```
 
+## Before committing `statusline.py`
+
+Always run the smoke test to catch syntax errors, import failures, and broken JSON handling:
+```bash
+echo '{}' | python3 statusline.py
+```
+If it crashes or exits with an error, do not commit.
+
+## README and CHANGELOG sync
+
+If a change adds a new feature, config option, or segment — update `README.md` to reflect it before committing. Don't ship undocumented user-facing changes.
+
+Add an entry to `CHANGELOG.md` for every version bump. Format: `## [x.y.z] — YYYY-MM-DD` followed by bullet points. Keep it user-facing (what changed, not how).
+
 ## Committing and pushing
 
 - **Commit freely** when work is complete and correct.
