@@ -52,6 +52,8 @@ After bumping, sync to local install:
 cp statusline.py ~/.claude/statusline.py
 ```
 
+`CHANGELOG.md` is the canonical release history. No GitHub releases required — the install always pulls from `main` directly.
+
 ## Skill files
 
 Skill files live in `skills/` and mirror to `~/.claude/plugins/marketplaces/ccstat/skills/`. After editing any skill, sync:

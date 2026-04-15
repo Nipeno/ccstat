@@ -3,7 +3,6 @@
 [![CI](https://github.com/Nipeno/ccstat/actions/workflows/ci.yml/badge.svg)](https://github.com/Nipeno/ccstat/actions/workflows/ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/github/v/tag/Nipeno/ccstat?label=version)](https://github.com/Nipeno/ccstat/tags)
 [![Works with Claude Code](https://img.shields.io/badge/Works%20with-Claude%20Code-orange)](https://docs.anthropic.com/en/docs/claude-code)
 
 Compact two-line statusline for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) sessions.
