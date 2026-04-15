@@ -2,7 +2,7 @@
 # ccstat — compact two-line statusline for Claude Code sessions
 # Copyright (C) 2026 Nipeno
 # SPDX-License-Identifier: GPL-3.0-or-later
-VERSION = "1.3.1"
+VERSION = "1.3.2"
 import json, sys, os, subprocess, time
 from datetime import datetime
 
@@ -82,7 +82,10 @@ if CFG_UPDATE_CHECK:
                 _kw['creationflags'] = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
             subprocess.Popen([sys.executable, '-c', _BG_FETCH], **_kw)
         _latest = _cache.get('latest', VERSION)
-        if _latest and _latest != VERSION:
+        def _ver(v):
+            try: return tuple(int(x) for x in v.split('.'))
+            except: return (0, 0, 0)
+        if _latest and _ver(_latest) > _ver(VERSION):
             update_badge = _latest
     except Exception:
         pass

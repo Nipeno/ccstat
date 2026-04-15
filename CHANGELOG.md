@@ -2,6 +2,10 @@
 
 All notable changes to ccstat are documented here.
 
+## [1.3.2] — 2026-04-16
+
+- Fix: update badge now uses semver comparison (`>`) instead of inequality (`!=`), preventing false "update available" alerts when installed version is newer than cached latest
+
 ## [1.3.1] — 2026-04-15
 
 - Windows: reconfigure stdout to UTF-8 to fix `UnicodeEncodeError` with Unicode statusline characters
