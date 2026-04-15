@@ -115,13 +115,13 @@ Or just use `/ccstat-config` and Claude will handle it.
 | Git branch | `main` | Current branch |
 | Git ahead/behind | `↑2 ↓1` | Commits ahead/behind upstream |
 | Git status | `●3 ~1 ?2` | Staged · modified · untracked |
-| Model | `claude-sonnet-4-6` | Active model |
+| Model | `Opus 4.6` | Active model (display name) |
 | Effort | `high` | Shown if `effortLevel` set in settings |
 | Time | `14:22` | Local clock |
 | Plugin badge | `[CAVEMAN]` | Generic badge slot — any plugin can write to `~/.claude/.ccstat-badge` |
 | Session name | `[my-session]` | Shown if session is named |
 | Context warning | `⚠ 200k` | When context exceeds 200k tokens |
-| Update badge | `↑ v1.3.1` | New version available — run `/ccstat-update` |
+| Update badge | `↑ v1.3.2` | New version available — run `/ccstat-update` |
 
 ### Line 2
 
@@ -134,7 +134,7 @@ Or just use `/ccstat-config` and Claude will handle it.
 | Output speed | `18t/s` | Session average output tokens/sec |
 | Duration | `⏱ 2m14s` | Total session wall time |
 | Diff | `+47 -12` | Lines added/removed this session |
-| Rate limits | `5h 42% ↺1h20m` | Pro plan quota + reset countdown |
+| Rate limits | `5h 42% ↺1h20m · 7d 18% ↺5d10h` | Pro plan 5h and 7d quotas + reset countdowns |
 
 ---
 
