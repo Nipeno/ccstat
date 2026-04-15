@@ -53,7 +53,7 @@ All commands are available as Claude Code slash commands after installing the pl
 
 | Command | Description |
 |---------|-------------|
-| `/ccstat` | Install ccstat |
+| `/ccstat-install` | Final setup step after `claude plugin install ccstat@ccstat` |
 | `/ccstat-update` | Check for updates and apply with confirmation |
 | `/ccstat-reinstall` | Force reinstall — overwrites everything, no prompts |
 | `/ccstat-uninstall` | Remove ccstat and clean up settings |

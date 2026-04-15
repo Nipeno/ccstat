@@ -1,10 +1,10 @@
 ---
-name: ccstat
+name: ccstat-install
 description: >
-  Install ccstat — a compact two-line statusline for Claude Code that shows git info,
-  session cost, $/hour burn rate, context bar, token speed, duration, lines changed,
-  and Pro rate limit countdowns. Invoke when the user says "install ccstat",
-  "set up ccstat", "add statusline", or runs /ccstat.
+  Final setup step after adding ccstat via the Claude Code plugin marketplace
+  (`claude plugin marketplace add Nipeno/ccstat`). Downloads statusline.py and
+  patches settings.json. Not needed if installed via the curl one-liner directly.
+  Trigger: /ccstat-install, "install ccstat", "set up ccstat", "add ccstat".
 ---
 
 Run the one-line installer without asking:
