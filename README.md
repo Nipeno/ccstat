@@ -41,6 +41,9 @@ Source: [`statusline.py`](statusline.py)
 
 > **Windows users:** Python is not included with Windows. [Install Python 3.8+](https://www.python.org/downloads/) before continuing.
 
+> [!WARNING]
+> ccstat replaces any existing `statusLine` configured in `~/.claude/settings.json`. Your previous statusline config will be overwritten.
+
 ```bash
 claude plugin marketplace add Nipeno/ccstat
 claude plugin install ccstat@ccstat
