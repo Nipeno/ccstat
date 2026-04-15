@@ -2,6 +2,15 @@
 
 All notable changes to ccstat are documented here.
 
+## [1.3.0] — 2026-04-15
+
+- Generic badge system: `badge_file`, `badge_prefix`, `badge_default_mode` config keys replace hardcoded caveman logic — any plugin can show a badge by writing to `~/.claude/.ccstat-badge`
+- Git: reduced 5 subprocess calls to 1 (`git status --porcelain -b` parses branch, ahead/behind, staged/modified/untracked in a single call)
+- Windows: case-insensitive home directory replacement in path shortening
+- Config validation: JSON parse errors and `bar_width` range violations logged to `~/.claude/.ccstat-errors.log` with a warning badge in the statusline
+- Background update check errors now logged instead of silently swallowed
+- `encoding='utf-8'` on all file opens
+
 ## [1.2.0] — 2026-04-14
 
 - Renamed marketplace commands for consistency (`/ccstat-setup`, `/ccstat-update`, `/ccstat-remove`, `/ccstat-info`, `/ccstat-config`)
