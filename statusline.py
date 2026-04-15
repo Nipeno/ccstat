@@ -11,7 +11,8 @@ _CONFIG_PATH = os.path.expanduser('~/.claude/ccstat.json')
 _cfg = {}
 try:
     if os.path.exists(_CONFIG_PATH):
-        _cfg = json.loads(open(_CONFIG_PATH).read())
+        with open(_CONFIG_PATH) as _f:
+            _cfg = json.load(_f)
 except Exception:
     pass
 
@@ -24,9 +25,9 @@ CFG_UPDATE_CHECK    = bool(_cfg.get('update_check', True))
 _UPDATE_CACHE = os.path.expanduser('~/.claude/.ccstat-update-cache')
 _RAW_URL      = 'https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py'
 _BG_FETCH     = (
-    "import urllib.request,json,time,os\n"
-    "cache='" + _UPDATE_CACHE + "'\n"
-    "url='" + _RAW_URL + "'\n"
+    "import urllib.request,json,time\n"
+    "cache=" + repr(_UPDATE_CACHE) + "\n"
+    "url=" + repr(_RAW_URL) + "\n"
     "try:\n"
     " r=urllib.request.urlopen(url,timeout=4).read().decode()\n"
     " ver=next((l.split('\"')[1] for l in r.splitlines() if l.startswith('VERSION')),None)\n"
@@ -104,7 +105,8 @@ badge = ''
 flag = os.path.expanduser('~/.claude/.caveman-active')
 if os.path.exists(flag):
     try:
-        mode = open(flag).read().strip()
+        with open(flag) as _ff:
+            mode = _ff.read().strip()
         if not mode or mode == 'full':
             badge = f'{ORANGE}[CAVEMAN]{R}'
         else:
