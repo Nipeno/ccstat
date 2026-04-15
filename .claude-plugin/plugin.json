@@ -1,0 +1,8 @@
+{
+  "name": "ccstat",
+  "description": "Compact two-line status display for Claude Code sessions — git, cost, context, and rate limits at a glance.",
+  "author": {
+    "name": "Nipeno",
+    "url": "https://github.com/Nipeno"
+  }
+}

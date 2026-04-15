@@ -113,4 +113,4 @@ If you use the [caveman](https://github.com/JuliusBrussee/caveman) plugin, ccsta
 
 ## License
 
-MIT
+[GNU General Public License v3.0](LICENSE)

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ccstat",
+  "description": "Compact two-line status display for Claude Code sessions — git, cost, context, and rate limits at a glance.",
+  "owner": {
+    "name": "Nipeno",
+    "url": "https://github.com/Nipeno"
+  },
+  "plugins": [
+    {
+      "name": "ccstat",
+      "description": "Live session stats in your Claude Code statusline. Git, cost, $/hour, context bar, token speed, rate limits.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

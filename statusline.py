@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""
-Custom Claude Code statusline
-Combines caveman badge + rich session data in a 2-line display
-"""
+# ccstat — compact two-line statusline for Claude Code sessions
+# Copyright (C) 2026 Nipeno
+# SPDX-License-Identifier: GPL-3.0-or-later
 import json, sys, os, subprocess, time
 from datetime import datetime
 
