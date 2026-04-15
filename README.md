@@ -1,6 +1,6 @@
-# ccstat — Claude Code statusline
+# ccstat for Claude Code
 
-Compact two-line status bar for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) sessions.
+Compact two-line statusline for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) sessions.
 
 ![ccstat screenshot](screenshot.png)
 
