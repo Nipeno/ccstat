@@ -2,6 +2,10 @@
 
 All notable changes to ccstat are documented here.
 
+## [1.3.3] — 2026-04-16
+
+- Time segment now respects system locale — 12h AM/PM for US, 24h for EU, seconds stripped
+
 ## [1.3.2] — 2026-04-16
 
 - Fix: update badge now uses semver comparison (`>`) instead of inequality (`!=`), preventing false "update available" alerts when installed version is newer than cached latest

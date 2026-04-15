@@ -2,8 +2,8 @@
 # ccstat — compact two-line statusline for Claude Code sessions
 # Copyright (C) 2026 Nipeno
 # SPDX-License-Identifier: GPL-3.0-or-later
-VERSION = "1.3.2"
-import json, sys, os, subprocess, time
+VERSION = "1.3.3"
+import json, sys, os, subprocess, time, locale, re
 from datetime import datetime
 
 if sys.platform == 'win32':
@@ -319,7 +319,12 @@ if branch:
 if worktree:     l1.append(f'{GRAY}wt:{worktree}{R}')
 l1.append(f'{WHITE}{model}{R}')
 if effort:       l1.append(f'{BLUE}{effort}{R}')
-l1.append(f'{GRAY}{datetime.now().strftime("%H:%M")}{R}')
+try:
+    locale.setlocale(locale.LC_TIME, '')
+except Exception:
+    pass
+_time_str = re.sub(r':\d{2}(?=\s|$)', '', datetime.now().strftime('%X'))
+l1.append(f'{GRAY}{_time_str}{R}')
 if badge:        l1.append(badge)
 if session_name: l1.append(f'{MAG}[{session_name}]{R}')
 if exceeds_200k: l1.append(f'{RED}⚠ 200k{R}')
