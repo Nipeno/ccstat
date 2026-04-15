@@ -143,15 +143,23 @@ Or just use `/ccstat-config` and Claude will handle it.
 
 ## Plugin badge system
 
-ccstat has a generic badge slot on line 1. Any plugin can show a badge by writing one line to `~/.claude/.ccstat-badge`. The caveman plugin does this automatically:
+ccstat has a generic badge slot on line 1. Any plugin that writes a single line to a file in `~/.claude/` can show a badge — ccstat reads it, no plugin-side changes needed.
 
-```
-[CAVEMAN]        ← full mode
-[CAVEMAN:LITE]   ← lite mode
-[CAVEMAN:ULTRA]  ← ultra mode
+**Example: caveman plugin**
+
+The [caveman plugin](https://github.com/Nipeno/caveman) writes its active mode to `~/.claude/.caveman-active`. Point ccstat at it via `ccstat.json`:
+
+```json
+{
+  "badge_file": ".caveman-active",
+  "badge_prefix": "CAVEMAN",
+  "badge_default_mode": "full"
+}
 ```
 
-To integrate your own plugin, write a line to `~/.claude/.ccstat-badge`. Configure the badge display with `badge_file`, `badge_prefix`, and `badge_default_mode` in `ccstat.json`.
+This displays `[CAVEMAN]` in full mode, `[CAVEMAN:LITE]` in lite mode, etc.
+
+**Integrate your own plugin:** write one line to any file in `~/.claude/`, then set `badge_file` to that filename in `ccstat.json`.
 
 ---
 
