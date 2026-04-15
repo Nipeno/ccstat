@@ -51,7 +51,7 @@ print("→ Configuring settings.json...")
 cfg = {}
 if os.path.exists(settings):
     try:
-        with open(settings) as f:
+        with open(settings, encoding='utf-8') as f:
             cfg = json.load(f)
     except json.JSONDecodeError:
         print("⚠ settings.json is malformed. Backing up and starting fresh.")
@@ -60,7 +60,7 @@ if os.path.exists(settings):
         cfg = {}
 
 cfg["statusLine"] = {"type": "command", "command": f"{py} {script}"}
-with open(settings, "w") as f:
+with open(settings, "w", encoding='utf-8') as f:
     json.dump(cfg, f, indent=2)
     f.write("\n")
 

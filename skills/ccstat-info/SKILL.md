@@ -21,7 +21,7 @@ settings = os.path.join(home, ".claude", "settings.json")
 # Current version
 current = None
 if os.path.exists(script):
-    with open(script) as f:
+    with open(script, encoding='utf-8') as f:
         for line in f:
             if line.startswith("VERSION"):
                 current = line.split('"')[1]
@@ -55,7 +55,7 @@ defaults = {"bar_width": 12, "show_tok_speed": True, "show_lines_diff": True, "u
 cfg = {}
 if os.path.exists(config):
     try:
-        with open(config) as f:
+        with open(config, encoding='utf-8') as f:
             cfg = json.load(f)
     except Exception:
         pass

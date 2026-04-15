@@ -28,10 +28,10 @@ for path in [script, config, cache, errors]:
 
 if os.path.exists(settings):
     try:
-        with open(settings) as f:
+        with open(settings, encoding='utf-8') as f:
             cfg = json.load(f)
         cfg.pop("statusLine", None)
-        with open(settings, "w") as f:
+        with open(settings, "w", encoding='utf-8') as f:
             json.dump(cfg, f, indent=2)
             f.write("\n")
         print("  Cleared statusLine from settings.json")

@@ -121,7 +121,7 @@ Or just use `/ccstat-config` and Claude will handle it.
 | Plugin badge | `[CAVEMAN]` | Generic badge slot — any plugin can write to `~/.claude/.ccstat-badge` |
 | Session name | `[my-session]` | Shown if session is named |
 | Context warning | `⚠ 200k` | When context exceeds 200k tokens |
-| Update badge | `↑ v1.3.2` | New version available — run `/ccstat-update` |
+| Update badge | `↑ v1.3.3` | New version available — run `/ccstat-update` |
 
 ### Line 2
 

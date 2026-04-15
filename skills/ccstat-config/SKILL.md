@@ -29,7 +29,7 @@ description: >
    path = os.path.join(os.path.expanduser('~'), '.claude', 'ccstat.json')
    cfg = {}
    if os.path.exists(path):
-       with open(path) as f: cfg = json.load(f)
+       with open(path, encoding='utf-8') as f: cfg = json.load(f)
    defaults = {'bar_width': 12, 'show_tok_speed': True, 'show_lines_diff': True, 'update_check': True, 'badge_file': '.ccstat-badge', 'badge_prefix': '', 'badge_default_mode': 'full'}
    for k, d in defaults.items():
        v = cfg.get(k, d)
@@ -58,10 +58,10 @@ import json, os
 path = os.path.join(os.path.expanduser("~"), ".claude", "ccstat.json")
 cfg = {}
 if os.path.exists(path):
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
         cfg = json.load(f)
 # apply changes here, e.g. cfg["bar_width"] = 20
-with open(path, "w") as f:
+with open(path, "w", encoding='utf-8') as f:
     json.dump(cfg, f, indent=2)
     f.write("\n")
 print(json.dumps(cfg, indent=2))

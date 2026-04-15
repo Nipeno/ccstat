@@ -18,7 +18,7 @@ url    = "https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py"
 # Get current version
 current = None
 if os.path.exists(script):
-    with open(script) as f:
+    with open(script, encoding='utf-8') as f:
         for line in f:
             if line.startswith("VERSION"):
                 current = line.split('"')[1]
@@ -74,7 +74,7 @@ for line in data.decode().splitlines():
         latest = line.split('"')[1]
         break
 if latest:
-    with open(cache, 'w') as f:
+    with open(cache, 'w', encoding='utf-8') as f:
         json.dump({'checked': time.time(), 'latest': latest}, f)
 print("✓ Updated. Changes take effect next prompt.")
 PYEOF
