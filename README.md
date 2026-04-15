@@ -56,16 +56,22 @@ Create `~/.claude/ccstat.json` to override defaults (all keys optional):
   "bar_width": 12,
   "show_tok_speed": true,
   "show_lines_diff": true,
-  "update_check": true
+  "update_check": true,
+  "badge_file": ".ccstat-badge",
+  "badge_prefix": "",
+  "badge_default_mode": "full"
 }
 ```
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `bar_width` | `12` | Width of the context bar in characters |
+| `bar_width` | `12` | Width of the context bar in characters (4–40) |
 | `show_tok_speed` | `true` | Show output token speed (t/s) |
 | `show_lines_diff` | `true` | Show +lines / -lines diff |
 | `update_check` | `true` | Daily background update check |
+| `badge_file` | `.ccstat-badge` | Filename inside `~/.claude/` that plugins write badges to |
+| `badge_prefix` | `""` | If set, file content is treated as a mode name and displayed as `[PREFIX:MODE]` |
+| `badge_default_mode` | `"full"` | Mode value that omits the suffix (shown as `[PREFIX]` not `[PREFIX:FULL]`) |
 
 Or just use `/ccstat-config` and Claude will handle it.
 
@@ -92,7 +98,7 @@ To disable: set `"update_check": false` in `~/.claude/ccstat.json`.
 | Model | `claude-sonnet-4-6` | Active model |
 | Effort | `high` | Shown if `effortLevel` set in settings |
 | Time | `14:22` | Local clock |
-| Caveman badge | `[CAVEMAN]` | Shown if [caveman](https://github.com/JuliusBrussee/caveman) plugin active |
+| Plugin badge | `[CAVEMAN]` | Generic badge slot — any plugin can write to `~/.claude/.ccstat-badge` |
 | Session name | `[my-session]` | Shown if session is named |
 | Context warning | `⚠ 200k` | When context exceeds 200k tokens |
 | Update badge | `↑ v1.3.0` | New version available — run `/ccstat-update` |
@@ -122,15 +128,17 @@ Works on macOS, Linux, and Windows. On Windows, install Python from [python.org]
 
 ---
 
-## Caveman integration
+## Plugin badge system
 
-Works with the [caveman](https://github.com/JuliusBrussee/caveman) plugin. Active mode shown as a badge:
+ccstat has a generic badge slot on line 1. Any plugin can show a badge by writing one line to `~/.claude/.ccstat-badge`. The caveman plugin does this automatically:
 
 ```
 [CAVEMAN]        ← full mode
 [CAVEMAN:LITE]   ← lite mode
 [CAVEMAN:ULTRA]  ← ultra mode
 ```
+
+To integrate your own plugin, write a line to `~/.claude/.ccstat-badge`. Configure the badge display with `badge_file`, `badge_prefix`, and `badge_default_mode` in `ccstat.json`.
 
 ---
 
