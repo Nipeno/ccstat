@@ -22,10 +22,12 @@ path = sys.argv[1]
 with open(path) as f:
     cfg = json.load(f)
 
+import os
 existing = cfg.get("statusLine")
+script = os.path.join(os.path.expanduser("~"), ".claude", "statusline.py")
 new_entry = {
     "type": "command",
-    "command": "python3 ~/.claude/statusline.py"
+    "command": f"python3 {script}"
 }
 
 # Already pointing at our statusline.py (any path form) — silent overwrite

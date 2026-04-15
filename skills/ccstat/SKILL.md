@@ -14,16 +14,19 @@ curl -fsSL https://raw.githubusercontent.com/Nipeno/ccstat/main/install.sh | bas
 ```
 
 If curl is unavailable or the user is on Windows, install manually:
-1. Download `https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py` and save to `~/.claude/statusline.py`
-2. Add to `~/.claude/settings.json`:
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "python3 ~/.claude/statusline.py"
-  }
-}
-```
+1. Download `https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py` to:
+   - macOS/Linux: `~/.claude/statusline.py`
+   - Windows: `%USERPROFILE%\.claude\statusline.py`
+2. Add to `settings.json` (`~/.claude/settings.json` or `%USERPROFILE%\.claude\settings.json`):
+
+   **macOS/Linux:**
+   ```json
+   { "statusLine": { "type": "command", "command": "python3 ~/.claude/statusline.py" } }
+   ```
+   **Windows:**
+   ```json
+   { "statusLine": { "type": "command", "command": "python \"%USERPROFILE%\\.claude\\statusline.py\"" } }
+   ```
 
 Tell user: "ccstat installed. Statusline appears at the bottom of your next session."
 

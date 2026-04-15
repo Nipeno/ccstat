@@ -38,7 +38,7 @@ Downloads `statusline.py` to `~/.claude/` and patches `~/.claude/settings.json`.
 {
   "statusLine": {
     "type": "command",
-    "command": "python3 ~/.claude/statusline.py"
+    "command": "python \"%USERPROFILE%\\.claude\\statusline.py\""
   }
 }
 ```

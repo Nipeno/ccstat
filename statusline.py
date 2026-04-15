@@ -126,6 +126,8 @@ except Exception:
 # ── Shorten path ──────────────────────────────────────────────────────────
 home = os.path.expanduser('~')
 short_dir = cwd.replace(home, '~', 1)
+if os.name == 'nt':
+    short_dir = short_dir.replace('/', '\\')
 
 # ── Git ───────────────────────────────────────────────────────────────────
 branch = git_status = ahead_behind = ''
