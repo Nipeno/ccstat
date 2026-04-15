@@ -28,10 +28,19 @@ new_entry = {
     "command": "python3 ~/.claude/statusline.py"
 }
 
-if existing and existing != new_entry:
+# Already pointing at our statusline.py (any path form) — silent overwrite
+already_ours = (
+    isinstance(existing, dict) and
+    "statusline.py" in existing.get("command", "")
+)
+
+if existing and not already_ours:
     print(f"⚠  statusLine is already set in {path}:")
     print(f"   {json.dumps(existing)}")
-    answer = input("   Overwrite? [y/N] ").strip().lower()
+    try:
+        answer = input("   Overwrite? [y/N] ").strip().lower()
+    except EOFError:
+        answer = "n"
     if answer != "y":
         print("Aborted — settings unchanged.")
         sys.exit(0)

@@ -6,6 +6,20 @@ VERSION = "1.1.0"
 import json, sys, os, subprocess, time
 from datetime import datetime
 
+# ── User config (~/.claude/ccstat.json) ──────────────────────────────────
+_CONFIG_PATH = os.path.expanduser('~/.claude/ccstat.json')
+_cfg = {}
+try:
+    if os.path.exists(_CONFIG_PATH):
+        _cfg = json.loads(open(_CONFIG_PATH).read())
+except Exception:
+    pass
+
+CFG_BAR_WIDTH       = int(_cfg.get('bar_width', 12))
+CFG_SHOW_TOK_SPEED  = bool(_cfg.get('show_tok_speed', True))
+CFG_SHOW_LINES_DIFF = bool(_cfg.get('show_lines_diff', True))
+CFG_UPDATE_CHECK    = bool(_cfg.get('update_check', True))
+
 # ── Auto-update check (fire-and-forget, once per day) ─────────────────────
 _UPDATE_CACHE = os.path.expanduser('~/.claude/.ccstat-update-cache')
 _RAW_URL      = 'https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py'
@@ -21,21 +35,22 @@ _BG_FETCH     = (
 )
 
 update_badge = ''
-try:
-    _cache = json.loads(open(_UPDATE_CACHE).read()) if os.path.exists(_UPDATE_CACHE) else {}
-    _age   = time.time() - float(_cache.get('checked', 0))
-    if _age > 86400:
-        _kw = {'stdout': subprocess.DEVNULL, 'stderr': subprocess.DEVNULL}
-        if os.name == 'posix':
-            _kw['start_new_session'] = True
-        else:
-            _kw['creationflags'] = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
-        subprocess.Popen([sys.executable, '-c', _BG_FETCH], **_kw)
-    _latest = _cache.get('latest', VERSION)
-    if _latest and _latest != VERSION:
-        update_badge = _latest
-except Exception:
-    pass
+if CFG_UPDATE_CHECK:
+    try:
+        _cache = json.loads(open(_UPDATE_CACHE).read()) if os.path.exists(_UPDATE_CACHE) else {}
+        _age   = time.time() - float(_cache.get('checked', 0))
+        if _age > 86400:
+            _kw = {'stdout': subprocess.DEVNULL, 'stderr': subprocess.DEVNULL}
+            if os.name == 'posix':
+                _kw['start_new_session'] = True
+            else:
+                _kw['creationflags'] = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+            subprocess.Popen([sys.executable, '-c', _BG_FETCH], **_kw)
+        _latest = _cache.get('latest', VERSION)
+        if _latest and _latest != VERSION:
+            update_badge = _latest
+    except Exception:
+        pass
 
 try:
     data = json.load(sys.stdin)
@@ -189,9 +204,8 @@ tok_speed     = int(total_out_tok / (api_ms / 1000)) if api_ms > 0 else 0
 tok_speed_fmt = f'{GRAY}{tok_speed}t/s{R}' if tok_speed > 0 else ''
 
 # ── Context bar ───────────────────────────────────────────────────────────
-BAR_W  = 12
-filled = min(ctx_pct * BAR_W // 100, BAR_W)
-empty  = BAR_W - filled
+filled = min(ctx_pct * CFG_BAR_WIDTH // 100, CFG_BAR_WIDTH)
+empty  = CFG_BAR_WIDTH - filled
 bc     = RED if ctx_pct >= 90 else YELLOW if ctx_pct >= 70 else GREEN
 bar    = f'{bc}{"▓" * filled}{R}{GRAY}{"░" * empty}{R}'
 
@@ -234,11 +248,9 @@ l2 = [
     f'{bar} {ctx_pct}%',
     curr_fmt,
 ]
-if tok_speed_fmt: l2.append(tok_speed_fmt)
-l2 += [
-    f'⏱ {dur_fmt(dur_ms)}',
-    f'{GREEN}+{lines_add}{R} {RED}-{lines_rem}{R}',
-]
+if CFG_SHOW_TOK_SPEED and tok_speed_fmt: l2.append(tok_speed_fmt)
+l2.append(f'⏱ {dur_fmt(dur_ms)}')
+if CFG_SHOW_LINES_DIFF: l2.append(f'{GREEN}+{lines_add}{R} {RED}-{lines_rem}{R}')
 
 print('  '.join(l1))
 print('  '.join(l2) + rl_str)
