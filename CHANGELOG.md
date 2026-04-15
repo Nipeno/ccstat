@@ -2,6 +2,10 @@
 
 All notable changes to ccstat are documented here.
 
+## [1.3.1] — 2026-04-15
+
+- Windows: reconfigure stdout to UTF-8 to fix `UnicodeEncodeError` with Unicode statusline characters
+
 ## [1.3.0] — 2026-04-15
 
 - Generic badge system: `badge_file`, `badge_prefix`, `badge_default_mode` config keys replace hardcoded caveman logic — any plugin can show a badge by writing to `~/.claude/.ccstat-badge`

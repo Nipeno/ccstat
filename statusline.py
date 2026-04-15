@@ -2,9 +2,12 @@
 # ccstat — compact two-line statusline for Claude Code sessions
 # Copyright (C) 2026 Nipeno
 # SPDX-License-Identifier: GPL-3.0-or-later
-VERSION = "1.3.0"
+VERSION = "1.3.1"
 import json, sys, os, subprocess, time
 from datetime import datetime
+
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # ── User config (~/.claude/ccstat.json) ──────────────────────────────────
 _CONFIG_PATH = os.path.expanduser('~/.claude/ccstat.json')
