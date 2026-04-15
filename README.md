@@ -14,24 +14,13 @@ $0.042  $1.23/h  ▓▓▓▓░░░░░░░░ 33%  ↑12k  18t/s  ⏱ 2m
 
 ## Install
 
-**1. Copy the script:**
-
 ```bash
-curl -o ~/.claude/statusline.py https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py
+curl -fsSL https://raw.githubusercontent.com/Nipeno/ccstat/main/install.sh | bash
 ```
 
-**2. Add to `~/.claude/settings.json`:**
+That's it. The statusline appears at the bottom of your next Claude Code session.
 
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "python3 ~/.claude/statusline.py"
-  }
-}
-```
-
-That's it. The statusline appears at the bottom of every Claude Code session.
+The script downloads `statusline.py` to `~/.claude/` and patches `~/.claude/settings.json` automatically. No manual JSON editing needed.
 
 ---
 
@@ -72,6 +61,25 @@ That's it. The statusline appears at the bottom of every Claude Code session.
 - Python 3.8+
 - Claude Code (any version with `statusLine` support)
 - Git (optional — git segments are skipped if not in a repo)
+
+**Platform notes:** ccstat works out of the box on macOS and Linux, which ship with Python 3. On Windows, Python isn't included by default — install it from [python.org](https://www.python.org/downloads/) first, then follow the manual install steps below instead of the curl one-liner.
+
+<details>
+<summary>Manual install (Windows / no curl)</summary>
+
+1. Download [`statusline.py`](https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py) and save it to `%USERPROFILE%\.claude\statusline.py`
+2. Add to `%USERPROFILE%\.claude\settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "python3 ~/.claude/statusline.py"
+  }
+}
+```
+
+</details>
 
 ---
 
