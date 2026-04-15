@@ -147,7 +147,7 @@ ccstat has a generic badge slot on line 1. Any plugin that writes a single line 
 
 **Example: caveman plugin**
 
-The [caveman plugin](https://github.com/Nipeno/caveman) writes its active mode to `~/.claude/.caveman-active`. Point ccstat at it via `ccstat.json`:
+The [caveman plugin](https://github.com/JuliusBrussee/caveman) writes its active mode to `~/.claude/.caveman-active`. Point ccstat at it via `ccstat.json`:
 
 ```json
 {
