@@ -51,7 +51,7 @@ print(f"ccstat v{current}  ({status})")
 print()
 
 # Config
-defaults = {"bar_width": 12, "show_tok_speed": True, "show_lines_diff": True, "update_check": True}
+defaults = {"bar_width": 12, "show_tok_speed": True, "show_lines_diff": True, "update_check": True, "badge_file": ".ccstat-badge", "badge_prefix": "", "badge_default_mode": "full"}
 cfg = {}
 if os.path.exists(config):
     try:

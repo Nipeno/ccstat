@@ -18,9 +18,10 @@ home     = os.path.expanduser("~")
 script   = os.path.join(home, ".claude", "statusline.py")
 config   = os.path.join(home, ".claude", "ccstat.json")
 cache    = os.path.join(home, ".claude", ".ccstat-update-cache")
+errors   = os.path.join(home, ".claude", ".ccstat-errors.log")
 settings = os.path.join(home, ".claude", "settings.json")
 
-for path in [script, config, cache]:
+for path in [script, config, cache, errors]:
     if os.path.exists(path):
         os.remove(path)
         print(f"  Removed {path}")

@@ -14,7 +14,30 @@ Compact two-line statusline for [Claude Code](https://docs.anthropic.com/en/docs
 
 ---
 
+## How it works
+
+ccstat runs as a statusline hook — Claude Code calls `statusline.py` after each turn and displays whatever it prints. The script reads session data Claude Code already computed and passes as JSON via stdin. It makes no API calls, adds nothing to your prompt, and consumes zero tokens.
+
+**Per-turn cost:** one Python process spawn (~20–50ms), one `git status` call, one cache file read. The daily update check is a fully detached background subprocess — it never blocks a turn.
+
+**In short:** ccstat is invisible to Claude. It has no effect on your token usage, context window, or session cost.
+
+<details>
+<summary>Exactly what runs on your machine</summary>
+
+- `statusline.py` — reads stdin JSON, runs `git status --porcelain -b`, formats and prints two lines. No network calls, no writes outside `~/.claude/`.
+- Daily update check — a detached subprocess that fetches one line from `raw.githubusercontent.com` (HTTPS only) and writes a version string to `~/.claude/.ccstat-update-cache`. Runs at most once per day. Disable with `"update_check": false`.
+- All file paths use `os.path.join` and are restricted to `~/.claude/`. No shell injection, no `eval()`, no user-supplied data executed.
+
+Source: [`statusline.py`](statusline.py)
+
+</details>
+
+---
+
 ## Install
+
+> **Windows users:** Python is not included with Windows. [Install Python 3.8+](https://www.python.org/downloads/) before continuing.
 
 ```bash
 claude plugin marketplace add Nipeno/ccstat
@@ -39,8 +62,6 @@ This installs the statusline only. Slash commands (`/ccstat-update`, `/ccstat-co
 ---
 
 ## Commands
-
-All commands are available as Claude Code slash commands after installing the plugin.
 
 | Command | Description |
 |---------|-------------|
@@ -82,14 +103,6 @@ Or just use `/ccstat-config` and Claude will handle it.
 
 ---
 
-## Auto-updates
-
-ccstat checks for updates once per day in the background — a fire-and-forget subprocess with no tokens and no blocking. When a new version is available, a `↑ vX.Y.Z` badge appears on line 1. Run `/ccstat-update` to apply. Run `/ccstat-info` to check manually.
-
-To disable: set `"update_check": false` in `~/.claude/ccstat.json`.
-
----
-
 ## What each segment shows
 
 ### Line 1
@@ -106,7 +119,7 @@ To disable: set `"update_check": false` in `~/.claude/ccstat.json`.
 | Plugin badge | `[CAVEMAN]` | Generic badge slot — any plugin can write to `~/.claude/.ccstat-badge` |
 | Session name | `[my-session]` | Shown if session is named |
 | Context warning | `⚠ 200k` | When context exceeds 200k tokens |
-| Update badge | `↑ v1.3.0` | New version available — run `/ccstat-update` |
+| Update badge | `↑ v1.3.1` | New version available — run `/ccstat-update` |
 
 ### Line 2
 
@@ -123,16 +136,6 @@ To disable: set `"update_check": false` in `~/.claude/ccstat.json`.
 
 ---
 
-## Requirements
-
-- Python 3.8+
-- Claude Code (any version with `statusLine` support)
-- Git (optional — git segments skipped if not in a repo)
-
-Works on macOS, Linux, and Windows. On Windows, install Python from [python.org](https://www.python.org/downloads/) first.
-
----
-
 ## Plugin badge system
 
 ccstat has a generic badge slot on line 1. Any plugin can show a badge by writing one line to `~/.claude/.ccstat-badge`. The caveman plugin does this automatically:
@@ -144,6 +147,16 @@ ccstat has a generic badge slot on line 1. Any plugin can show a badge by writin
 ```
 
 To integrate your own plugin, write a line to `~/.claude/.ccstat-badge`. Configure the badge display with `badge_file`, `badge_prefix`, and `badge_default_mode` in `ccstat.json`.
+
+---
+
+## Requirements
+
+- Python 3.8+
+- Claude Code (any version with `statusLine` support)
+- Git (optional — git segments skipped if not in a repo)
+
+Works on macOS, Linux, and Windows. On Windows, install Python from [python.org](https://www.python.org/downloads/) first.
 
 ---
 

@@ -23,10 +23,7 @@ No dependencies beyond Python 3.8+ and Claude Code.
 This script runs on every Claude Code prompt on users' machines. Hold it to a high standard.
 
 - **Bump the version** at the top of the file before committing (semver: patch/minor/major).
-- **Smoke test** before committing:
-  ```bash
-  echo '{}' | python3 statusline.py
-  ```
+- CI runs a smoke test (`echo '{}' | python3 statusline.py`) and `ruff check --select F,E9` on every PR. If either fails, run them locally to debug.
 - **Cross-platform**: use `os.path.join`, not hardcoded `/`. Test mentally against macOS, Linux, Windows.
 - **No `eval()`/`exec()`** on external data. No HTTP (use HTTPS). No shell injection.
 

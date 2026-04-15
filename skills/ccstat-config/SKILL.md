@@ -16,6 +16,9 @@ description: >
 | `show_tok_speed` | bool | `true` | Show output token speed (t/s) on line 2 |
 | `show_lines_diff` | bool | `true` | Show +lines/-lines diff on line 2 |
 | `update_check` | bool | `true` | Enable daily background update check |
+| `badge_file` | string | `".ccstat-badge"` | Filename inside `~/.claude/` that plugins write badges to |
+| `badge_prefix` | string | `""` | If set, file content is treated as a mode name and displayed as `[PREFIX:MODE]` |
+| `badge_default_mode` | string | `"full"` | Mode value that omits the suffix (shown as `[PREFIX]` not `[PREFIX:FULL]`) |
 
 ## Behavior
 
@@ -27,7 +30,7 @@ description: >
    cfg = {}
    if os.path.exists(path):
        with open(path) as f: cfg = json.load(f)
-   defaults = {'bar_width': 12, 'show_tok_speed': True, 'show_lines_diff': True, 'update_check': True}
+   defaults = {'bar_width': 12, 'show_tok_speed': True, 'show_lines_diff': True, 'update_check': True, 'badge_file': '.ccstat-badge', 'badge_prefix': '', 'badge_default_mode': 'full'}
    for k, d in defaults.items():
        v = cfg.get(k, d)
        marker = ' (custom)' if v != d else ''
