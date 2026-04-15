@@ -2,8 +2,40 @@
 # ccstat — compact two-line statusline for Claude Code sessions
 # Copyright (C) 2026 Nipeno
 # SPDX-License-Identifier: GPL-3.0-or-later
+VERSION = "1.1.0"
 import json, sys, os, subprocess, time
 from datetime import datetime
+
+# ── Auto-update check (fire-and-forget, once per day) ─────────────────────
+_UPDATE_CACHE = os.path.expanduser('~/.claude/.ccstat-update-cache')
+_RAW_URL      = 'https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py'
+_BG_FETCH     = (
+    "import urllib.request,json,time,os\n"
+    "cache='" + _UPDATE_CACHE + "'\n"
+    "url='" + _RAW_URL + "'\n"
+    "try:\n"
+    " r=urllib.request.urlopen(url,timeout=4).read().decode()\n"
+    " ver=next((l.split('\"')[1] for l in r.splitlines() if l.startswith('VERSION')),None)\n"
+    " ver and open(cache,'w').write(json.dumps({'checked':time.time(),'latest':ver}))\n"
+    "except:pass\n"
+)
+
+update_badge = ''
+try:
+    _cache = json.loads(open(_UPDATE_CACHE).read()) if os.path.exists(_UPDATE_CACHE) else {}
+    _age   = time.time() - float(_cache.get('checked', 0))
+    if _age > 86400:
+        _kw = {'stdout': subprocess.DEVNULL, 'stderr': subprocess.DEVNULL}
+        if os.name == 'posix':
+            _kw['start_new_session'] = True
+        else:
+            _kw['creationflags'] = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+        subprocess.Popen([sys.executable, '-c', _BG_FETCH], **_kw)
+    _latest = _cache.get('latest', VERSION)
+    if _latest and _latest != VERSION:
+        update_badge = _latest
+except Exception:
+    pass
 
 try:
     data = json.load(sys.stdin)
@@ -194,6 +226,7 @@ l1.append(f'{GRAY}{datetime.now().strftime("%H:%M")}{R}')
 if badge:        l1.append(badge)
 if session_name: l1.append(f'{MAG}[{session_name}]{R}')
 if exceeds_200k: l1.append(f'{RED}⚠ 200k{R}')
+if update_badge: l1.append(f'{YELLOW}↑ v{update_badge}{R}')
 
 # ── Build line 2 — resources (cost → context → tokens → speed → time → diff → limits) ──
 l2 = [
