@@ -2,37 +2,65 @@
 # ccstat — compact two-line statusline for Claude Code sessions
 # Copyright (C) 2026 Nipeno
 # SPDX-License-Identifier: GPL-3.0-or-later
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 import json, sys, os, subprocess, time
 from datetime import datetime
 
 # ── User config (~/.claude/ccstat.json) ──────────────────────────────────
 _CONFIG_PATH = os.path.expanduser('~/.claude/ccstat.json')
-_cfg = {}
+_ERR_LOG     = os.path.expanduser('~/.claude/.ccstat-errors.log')
+_cfg         = {}
+_cfg_errors  = []
+
 try:
     if os.path.exists(_CONFIG_PATH):
-        with open(_CONFIG_PATH) as _f:
+        with open(_CONFIG_PATH, encoding='utf-8') as _f:
             _cfg = json.load(_f)
-except Exception:
-    pass
+except json.JSONDecodeError as _e:
+    _cfg_errors.append(f'ccstat.json parse error: {_e}')
+except Exception as _e:
+    _cfg_errors.append(f'ccstat.json read error: {_e}')
 
-CFG_BAR_WIDTH       = int(_cfg.get('bar_width', 12))
+_bar_width_raw = _cfg.get('bar_width', 12)
+try:
+    _bar_width_int = int(_bar_width_raw)
+    if not (4 <= _bar_width_int <= 40):
+        _cfg_errors.append(f'bar_width {_bar_width_raw!r} out of range 4–40, using 12')
+        CFG_BAR_WIDTH = 12
+    else:
+        CFG_BAR_WIDTH = _bar_width_int
+except (ValueError, TypeError):
+    _cfg_errors.append(f'bar_width must be an integer, got {_bar_width_raw!r}')
+    CFG_BAR_WIDTH = 12
+
 CFG_SHOW_TOK_SPEED  = bool(_cfg.get('show_tok_speed', True))
 CFG_SHOW_LINES_DIFF = bool(_cfg.get('show_lines_diff', True))
 CFG_UPDATE_CHECK    = bool(_cfg.get('update_check', True))
+CFG_BADGE_FILE         = str(_cfg.get('badge_file', '.ccstat-badge'))
+CFG_BADGE_PREFIX       = str(_cfg.get('badge_prefix', ''))
+CFG_BADGE_DEFAULT_MODE = str(_cfg.get('badge_default_mode', 'full'))
+
+if _cfg_errors:
+    try:
+        with open(_ERR_LOG, 'w', encoding='utf-8') as _ef:
+            _ef.write('\n'.join(_cfg_errors) + '\n')
+    except Exception:
+        pass
 
 # ── Auto-update check (fire-and-forget, once per day) ─────────────────────
 _UPDATE_CACHE = os.path.expanduser('~/.claude/.ccstat-update-cache')
 _RAW_URL      = 'https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py'
 _BG_FETCH     = (
-    "import urllib.request,json,time\n"
+    "import urllib.request,json,time,os\n"
     "cache=" + repr(_UPDATE_CACHE) + "\n"
+    "log=" + repr(_ERR_LOG) + "\n"
     "url=" + repr(_RAW_URL) + "\n"
     "try:\n"
-    " r=urllib.request.urlopen(url,timeout=4).read().decode()\n"
+    " r=urllib.request.urlopen(url,timeout=4).read().decode('utf-8')\n"
     " ver=next((l.split('\"')[1] for l in r.splitlines() if l.startswith('VERSION')),None)\n"
-    " ver and open(cache,'w').write(json.dumps({'checked':time.time(),'latest':ver}))\n"
-    "except:pass\n"
+    " ver and open(cache,'w',encoding='utf-8').write(json.dumps({'checked':time.time(),'latest':ver}))\n"
+    "except Exception as e:\n"
+    " open(log,'w',encoding='utf-8').write(f'[update check] {e}\\n')\n"
 )
 
 update_badge = ''
@@ -40,7 +68,7 @@ if CFG_UPDATE_CHECK:
     try:
         _cache = {}
         if os.path.exists(_UPDATE_CACHE):
-            with open(_UPDATE_CACHE) as _uf:
+            with open(_UPDATE_CACHE, encoding='utf-8') as _uf:
                 _cache = json.load(_uf)
         _age   = time.time() - float(_cache.get('checked', 0))
         if _age > 86400:
@@ -103,69 +131,111 @@ rl_5h_reset   = g('rate_limits.five_hour.resets_at')
 rl_7d_pct     = g('rate_limits.seven_day.used_percentage')
 rl_7d_reset   = g('rate_limits.seven_day.resets_at')
 
-# ── Caveman badge ─────────────────────────────────────────────────────────
+# ── Custom badge ──────────────────────────────────────────────────────────
+# Any plugin can show a badge by writing one line to ~/.claude/<badge_file>.
+#
+# badge_file         — filename inside ~/.claude/ to read (default: .ccstat-badge)
+# badge_prefix       — if set, content is treated as a mode name:
+#                        default mode → [PREFIX]
+#                        other modes  → [PREFIX:MODE]
+# badge_default_mode — which mode value omits the suffix (default: "full")
+#
+# Content with ANSI escape codes is displayed as-is.
+# Without a prefix, content is shown as [CONTENT].
 badge = ''
-flag = os.path.expanduser('~/.claude/.caveman-active')
-if os.path.exists(flag):
+_badge_path = os.path.join(os.path.expanduser('~/.claude'), CFG_BADGE_FILE)
+if os.path.exists(_badge_path):
     try:
-        with open(flag) as _ff:
-            mode = _ff.read().strip()
-        if not mode or mode == 'full':
-            badge = f'{ORANGE}[CAVEMAN]{R}'
-        else:
-            badge = f'{ORANGE}[CAVEMAN:{mode.upper()}]{R}'
+        with open(_badge_path, encoding='utf-8') as _bf:
+            _raw = _bf.readline().strip()[:80]
+        if _raw:
+            if '\033' in _raw:
+                badge = _raw
+            elif CFG_BADGE_PREFIX:
+                _prefix = CFG_BADGE_PREFIX.upper()
+                _mode   = _raw.upper()
+                if _mode == CFG_BADGE_DEFAULT_MODE.upper():
+                    badge = f'{ORANGE}[{_prefix}]{R}'
+                else:
+                    badge = f'{ORANGE}[{_prefix}:{_mode}]{R}'
+            else:
+                badge = f'{ORANGE}[{_raw.upper()}]{R}'
     except Exception:
-        badge = f'{ORANGE}[CAVEMAN]{R}'
+        pass
 
 # ── Effort level ──────────────────────────────────────────────────────────
 effort = ''
-settings_path = os.path.expanduser('~/.claude/settings.json')
+_settings_path = os.path.expanduser('~/.claude/settings.json')
 try:
-    with open(settings_path) as f:
+    with open(_settings_path, encoding='utf-8') as f:
         effort = json.load(f).get('effortLevel', '')
 except Exception:
     pass
 
 # ── Shorten path ──────────────────────────────────────────────────────────
-home = os.path.normpath(os.path.expanduser('~'))
-short_dir = os.path.normpath(cwd).replace(home, '~', 1)
+_home     = os.path.normpath(os.path.expanduser('~'))
+_norm_cwd = os.path.normpath(cwd)
+if os.name == 'nt':
+    # Case-insensitive home replacement on Windows
+    if _norm_cwd.lower().startswith(_home.lower()):
+        short_dir = '~' + _norm_cwd[len(_home):]
+    else:
+        short_dir = _norm_cwd
+else:
+    short_dir = _norm_cwd.replace(_home, '~', 1)
 
-# ── Git ───────────────────────────────────────────────────────────────────
+# ── Git (single subprocess call via --porcelain -b) ───────────────────────
 branch = git_status = ahead_behind = ''
 try:
-    subprocess.check_output(['git','-C',cwd,'rev-parse','--git-dir'], stderr=subprocess.DEVNULL)
-    branch = subprocess.check_output(
-        ['git','-C',cwd,'branch','--show-current'], text=True, stderr=subprocess.DEVNULL).strip()
+    _status_lines = subprocess.check_output(
+        ['git', '-C', cwd, 'status', '--porcelain', '-b'],
+        text=True, encoding='utf-8', stderr=subprocess.DEVNULL
+    ).splitlines()
 
-    staged_out    = subprocess.check_output(['git','-C',cwd,'diff','--cached','--numstat'],    text=True, stderr=subprocess.DEVNULL).strip()
-    modified_out  = subprocess.check_output(['git','-C',cwd,'diff','--numstat'],               text=True, stderr=subprocess.DEVNULL).strip()
-    untracked_out = subprocess.check_output(['git','-C',cwd,'ls-files','--others','--exclude-standard'], text=True, stderr=subprocess.DEVNULL).strip()
+    _n_staged = _n_modified = _n_untracked = 0
+    _ahead = _behind = 0
 
-    n_staged    = len([l for l in staged_out.split('\n')    if l])
-    n_modified  = len([l for l in modified_out.split('\n')  if l])
-    n_untracked = len([l for l in untracked_out.split('\n') if l])
+    for _line in _status_lines:
+        if _line.startswith('## '):
+            _ref = _line[3:].split('...')[0].strip()
+            if _ref.startswith('No commits yet on '):
+                branch = _ref[18:]
+            elif _ref.startswith('HEAD'):
+                branch = ''  # detached HEAD
+            else:
+                branch = _ref
+            # Ahead/behind lives in the same branch line: [ahead N, behind N]
+            if '[' in _line and ']' in _line:
+                _bracket = _line[_line.index('[')+1:_line.rindex(']')]
+                for _part in _bracket.split(','):
+                    _part = _part.strip()
+                    if _part.startswith('ahead '):
+                        try: _ahead = int(_part[6:])
+                        except ValueError: pass
+                    elif _part.startswith('behind '):
+                        try: _behind = int(_part[7:])
+                        except ValueError: pass
+        elif len(_line) >= 2:
+            if _line[:2] == '??':
+                _n_untracked += 1
+            else:
+                if _line[0] not in (' ', '?'): _n_staged += 1
+                if _line[1] not in (' ', '?'): _n_modified += 1
 
-    if n_staged or n_modified or n_untracked:
-        parts = []
-        if n_staged:    parts.append(f'{GREEN}●{n_staged}{R}')
-        if n_modified:  parts.append(f'{YELLOW}~{n_modified}{R}')
-        if n_untracked: parts.append(f'{GRAY}?{n_untracked}{R}')
-        git_status = ' '.join(parts)
+    if _n_staged or _n_modified or _n_untracked:
+        _parts = []
+        if _n_staged:    _parts.append(f'{GREEN}●{_n_staged}{R}')
+        if _n_modified:  _parts.append(f'{YELLOW}~{_n_modified}{R}')
+        if _n_untracked: _parts.append(f'{GRAY}?{_n_untracked}{R}')
+        git_status = ' '.join(_parts)
     else:
         git_status = f'{GREEN}●{R}'
 
-    # Commits ahead/behind upstream
-    try:
-        ab = subprocess.check_output(
-            ['git','-C',cwd,'rev-list','--left-right','--count','HEAD...@{u}'],
-            text=True, stderr=subprocess.DEVNULL).strip().split()
-        ahead, behind = int(ab[0]), int(ab[1])
-        ab_parts = []
-        if ahead:  ab_parts.append(f'{CYAN}↑{ahead}{R}')
-        if behind: ab_parts.append(f'{RED}↓{behind}{R}')
-        ahead_behind = ' '.join(ab_parts)
-    except Exception:
-        pass
+    _ab_parts = []
+    if _ahead:  _ab_parts.append(f'{CYAN}↑{_ahead}{R}')
+    if _behind: _ab_parts.append(f'{RED}↓{_behind}{R}')
+    ahead_behind = ' '.join(_ab_parts)
+
 except Exception:
     pass
 
@@ -197,6 +267,8 @@ def rl_color(pct):
     return GREEN
 
 # ── Cost color + per-hour ─────────────────────────────────────────────────
+# on_pro: inferred from rate limit data presence — API users don't receive
+# rate_limits fields; Pro/Max plan users do.
 on_pro     = rl_5h_pct is not None or rl_7d_pct is not None
 quota_gone = on_pro and (rl_5h_pct is not None and float(rl_5h_pct) >= 100)
 cost_real  = not on_pro or quota_gone
@@ -246,6 +318,7 @@ if badge:        l1.append(badge)
 if session_name: l1.append(f'{MAG}[{session_name}]{R}')
 if exceeds_200k: l1.append(f'{RED}⚠ 200k{R}')
 if update_badge: l1.append(f'{YELLOW}↑ v{update_badge}{R}')
+if _cfg_errors:  l1.append(f'{RED}⚠ cfg{R}')
 
 # ── Build line 2 — resources (cost → context → tokens → speed → time → diff → limits) ──
 l2 = [
