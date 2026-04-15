@@ -117,7 +117,7 @@ Or just use `/ccstat-config` and Claude will handle it.
 | Git status | `●3 ~1 ?2` | Staged · modified · untracked |
 | Model | `Opus 4.6` | Active model (display name) |
 | Effort | `high` | Shown if `effortLevel` set in settings |
-| Time | `14:22` | Local clock |
+| Time | `14:22` | Local clock at last prompt |
 | Plugin badge | `[CAVEMAN]` | Generic badge slot — any plugin can write to `~/.claude/.ccstat-badge` |
 | Session name | `[my-session]` | Shown if session is named |
 | Context warning | `⚠ 200k` | When context exceeds 200k tokens |
