@@ -34,6 +34,7 @@ PYEOF
 ```bash
 python3 - <<'PYEOF'
 import urllib.request, json, os, sys, subprocess
+sys.stdout.reconfigure(encoding='utf-8')
 
 home     = os.path.expanduser("~")
 claude   = os.path.join(home, ".claude")
@@ -44,17 +45,17 @@ py       = "python" if sys.platform == "win32" else "python3"
 
 os.makedirs(claude, exist_ok=True)
 
-print("→ Downloading statusline.py...")
+print("Downloading statusline.py...")
 urllib.request.urlretrieve(url, script)
 
-print("→ Configuring settings.json...")
+print("Configuring settings.json...")
 cfg = {}
 if os.path.exists(settings):
     try:
         with open(settings, encoding='utf-8') as f:
             cfg = json.load(f)
     except json.JSONDecodeError:
-        print("⚠ settings.json is malformed. Backing up and starting fresh.")
+        print("WARNING: settings.json is malformed. Backing up and starting fresh.")
         import shutil
         shutil.copy2(settings, settings + ".bak")
         cfg = {}
@@ -64,7 +65,7 @@ with open(settings, "w", encoding='utf-8') as f:
     json.dump(cfg, f, indent=2)
     f.write("\n")
 
-print("→ Verifying...")
+print("Verifying...")
 result = subprocess.run(
     [sys.executable, script],
     input=b"{}",
@@ -73,9 +74,9 @@ result = subprocess.run(
 )
 lines = result.stdout.decode().strip().splitlines()
 if len(lines) == 2:
-    print("✓ ccstat is set up and working.")
+    print("ccstat is set up and working.")
 else:
-    print("⚠ Setup complete but smoke test had unexpected output.")
+    print("WARNING: Setup complete but smoke test had unexpected output.")
 PYEOF
 ```
 

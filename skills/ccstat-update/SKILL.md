@@ -60,7 +60,8 @@ If yes, run:
 
 ```bash
 python3 - <<'PYEOF'
-import urllib.request, os, json, time
+import urllib.request, os, sys, json, time
+sys.stdout.reconfigure(encoding='utf-8')
 script = os.path.join(os.path.expanduser("~"), ".claude", "statusline.py")
 cache  = os.path.join(os.path.expanduser("~"), ".claude", ".ccstat-update-cache")
 url    = "https://raw.githubusercontent.com/Nipeno/ccstat/main/statusline.py"

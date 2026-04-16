@@ -11,6 +11,7 @@ Run this Python script and display the output:
 ```bash
 python3 - <<'PYEOF'
 import urllib.request, json, os, sys
+sys.stdout.reconfigure(encoding='utf-8')
 
 home     = os.path.expanduser("~")
 script   = os.path.join(home, ".claude", "statusline.py")

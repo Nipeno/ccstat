@@ -12,7 +12,8 @@ If yes, run this Python script:
 
 ```bash
 python3 - <<'PYEOF'
-import json, os
+import json, os, sys
+sys.stdout.reconfigure(encoding='utf-8')
 
 home     = os.path.expanduser("~")
 script   = os.path.join(home, ".claude", "statusline.py")
